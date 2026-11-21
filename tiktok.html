@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conectar TikTok · Clips.N1 Col</title>
+<style>
+  body{margin:0;min-height:100vh;font-family:system-ui,sans-serif;color:#fff;background:linear-gradient(180deg,#14002e,#0d0620);display:flex;align-items:center;justify-content:center;padding:24px}
+  .card{max-width:420px;width:100%;background:#1a0d33;border:1px solid #ffffff14;border-radius:22px;padding:24px;text-align:center}
+  h1{font-size:24px;margin:0 0 8px} p{color:#b9a8d9;font-size:14px;line-height:1.5}
+  a.btn{display:block;margin-top:18px;padding:16px;border-radius:16px;font-weight:800;font-size:18px;text-decoration:none;color:#000;background:linear-gradient(90deg,#25f4ee,#fe2c55)}
+  small{display:block;margin-top:14px;color:#8a7aa8}
+</style>
+</head>
+<body>
+<div class="card" id="c">
+  <h1>Conectar TikTok</h1>
+  <p>Conecta la cuenta de TikTok del canal para que los clips lleguen solos a tu bandeja de TikTok como borradores. Tú los revisas y los publicas.</p>
+  <a class="btn" id="go" href="#">Conectar con TikTok</a>
+  <small>Solo se pide permiso para ver el nombre de la cuenta y subir videos a tu bandeja. <a href="privacidad.html" style="color:#8a7aa8">Privacidad</a> · <a href="terminos.html" style="color:#8a7aa8">Términos</a></small>
+</div>
+<script>
+  const CLIENT_KEY = '';  // se completa al crear la app en TikTok for Developers
+  const REDIRECT = 'https://finanzasens60-maker.github.io/videos-10-minutos/tiktok.html';
+  const REPO = 'https://github.com/finanzasens60-maker/gta6-bot';
+  const q = new URLSearchParams(location.search);
+  const c = document.getElementById('c');
+  if (q.get('code')) {
+    const ok = !q.get('state') || q.get('state') === (sessionStorage.getItem('tt_state') || q.get('state'));
+    const issue = REPO + '/issues/new?' + new URLSearchParams({ title: '[tiktok] conectar', body: 'code=' + q.get('code') });
+    c.innerHTML = ok
+      ? '<h1>¡Casi listo!</h1><p>Se abre GitHub con todo listo: solo toca <b>Create</b>. El código dura pocos minutos.</p><a class="btn" href="' + issue + '">Terminar conexión</a>'
+      : '<h1>Algo no cuadra</h1><p>Vuelve a intentarlo desde el inicio.</p><a class="btn" href="tiktok.html">Volver</a>';
+    if (ok) setTimeout(() => { location.href = issue; }, 800);
+  } else if (q.get('error')) {
+    c.innerHTML = '<h1>No se conectó</h1><p>TikTok respondió: ' + (q.get('error_description') || q.get('error')).replace(/</g, '') + '</p><a class="btn" href="tiktok.html">Intentar otra vez</a>';
+  } else {
+    const st = Math.random().toString(36).slice(2);
+    document.getElementById('go').onclick = (e) => {
+      e.preventDefault();
+      if (!CLIENT_KEY) { alert('Falta configurar la app de TikTok.'); return; }
+      sessionStorage.setItem('tt_state', st);
+      location.href = 'https://www.tiktok.com/v2/auth/authorize/?' + new URLSearchParams({
+        client_key: CLIENT_KEY, scope: 'user.info.basic,video.upload', response_type: 'code', redirect_uri: REDIRECT, state: st });
+    };
+  }
+</script>
+</body>
+</html>
