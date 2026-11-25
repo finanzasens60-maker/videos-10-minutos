@@ -154,12 +154,12 @@
       const etiquetas = (is.labels || []).map((l) => l.name);
       const textos = (Array.isArray(cs) ? cs : []).map((c) => c.body || '');
       const ultimo = textos[textos.length - 1] || '';
-      const links = [...new Set(textos.join('\n').match(/https:\/\/litter\.catbox\.moe\/[^\s)]+/g) || [])];
+      const links = [...new Set(textos.join('\n').match(/https:\/\/(?:litter\.catbox\.moe\/|files\.catbox\.moe\/|gofile\.io\/d\/)[^\s)]+/g) || [])];
       $('e-links').innerHTML = '';
       if (links.length) {
         pasos(4);
         $('e-icono').textContent = '✅'; $('e-titulo').textContent = '¡Tu pedido está listo!';
-        $('e-texto').textContent = 'Descarga tus videos. Los links duran 72 horas.';
+        $('e-texto').textContent = 'Descarga tus videos pronto: los links son temporales.';
         links.forEach((u, i) => { const a = document.createElement('a'); a.href = u; a.target = '_blank'; a.rel = 'noopener';
           a.textContent = '⬇️ Descargar video ' + (i + 1); $('e-links').appendChild(a); });
         clearInterval(timer);
